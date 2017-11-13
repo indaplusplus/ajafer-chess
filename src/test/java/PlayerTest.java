@@ -22,8 +22,8 @@ class PlayerTest {
 
   @Test
   void getCurrentColor() {
-    assertEquals(PLAYER1, Color.BLACK);
-    assertEquals(PLAYER2, Color.WHITE);
+    assertEquals(PLAYER1.getCurrentColor(), Color.BLACK);
+    assertEquals(PLAYER2.getCurrentColor(), Color.WHITE);
 
     assertNotEquals(PLAYER1.getCurrentColor(), PLAYER2.getCurrentColor());
   }

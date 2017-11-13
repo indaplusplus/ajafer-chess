@@ -108,6 +108,7 @@ public class Board {
 
   public void removeFromBoard(Piece piece) {
     currentPieces.remove(piece);
+    removedPieces.add(piece);
   }
 
   /**
