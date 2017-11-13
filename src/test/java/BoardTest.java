@@ -15,7 +15,7 @@ class BoardTest {
   void setupPieces() {
     BOARD.setupBoard();
     BOARD.setupPieces(PLAYER1);
-    assertEquals(BOARD.getCurrentPieces().size(), 16);
+    assertEquals(BOARD.getCurrentPieces().size(), 144);
     BOARD.setupPieces(PLAYER2);
     assertEquals(BOARD.getCurrentPieces().size(), 32);
   }
