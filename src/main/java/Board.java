@@ -224,246 +224,42 @@ public class Board {
     int yDistance = Math.abs(deltaY);
     Square toSquare = boardRepresentation[toX][toY];
 
-    // TODO:- clean this trash code
-
-    if (piece instanceof Pawn) {
-      // The pawn only takes single steps forward, therefore we will only check if there is a piece with the same color one step ahead of it
+    if (piece instanceof Knight) {
+      //Knight is a special case since it doesn't pass any squares
+      if (!piece.isMoveValid(CaptureDirection.RIGHT, fromX, fromY, toX, toY)) {
+        return true;
+      }
+      if (toSquare.hasPiece() && toSquare.getPiece().getColor() == piece.getColor()) {
+        return true;
+      }
+    } else if (piece instanceof Pawn) {
       if ((xDistance == 1 && yDistance == 0) && toSquare.hasPiece()) {
         // if the move being made is a single step forward, then check if there is another piece in front
         return true;
       }
-
-      return false;
-    } else if (piece instanceof Rook) {
-      // The rook moves in all 4 (up down left right) directions and we need to check if
-      // any of the squares between the rooks current location and destination are blocked by any pieces
-      // Logic for black rook move
-
-      if (deltaX < 0 && deltaY == 0) {
-        // forward (if black) or backward (if white) movement.
-
-        for (int i = 1; i <= xDistance; i++) {
-          int nextX = fromX - i; // if black
-
-          if (piece.getColor() == Color.WHITE) {
-            nextX = fromX + i;
-          }
-
-          if (boardRepresentation[nextX][fromY].hasPiece() && boardRepresentation[nextX][fromY].getPiece().getColor() == piece.getColor()) {
-            return true; // the move is blocked by another piece with same color
-          }
-        }
-
-        return false; // passed test, not blocked
-      } else if (deltaX > 0 && deltaY == 0) {
-        // backward (if black) or forward (if white)
-
-        for (int i = 1; i <= xDistance; i++) {
-          int nextX = fromX + i; // if black
-
-          if (piece.getColor() == Color.WHITE) {
-            nextX = fromX - i;
-          }
-
-          if (boardRepresentation[nextX][fromY].hasPiece() && boardRepresentation[nextX][fromY].getPiece().getColor() == piece.getColor()) {
-            return true; // the move is blocked by another piece with same color
-          }
-        }
-
-        return false;
-      } else if (deltaX == 0 && deltaY > 0) {
-        // right movement
-
-        for (int i = 1; i <= yDistance; i++) {
-          int nextY = fromY + i;
-          if (boardRepresentation[fromX][nextY].hasPiece() && boardRepresentation[fromX][nextY].getPiece().getColor() == piece.getColor()) {
-            return true;
-          }
-        }
-
-        return false;
-      } else if (deltaX == 0 && deltaY < 0) {
-        // left movement
-
-        for (int i = 1; i <= yDistance; i++) {
-          int nextY = fromY - i;
-          if (boardRepresentation[fromX][nextY].hasPiece() && boardRepresentation[fromX][nextY].getPiece().getColor() == piece.getColor()) {
-            return true;
-          }
-        }
-
-        return false;
+    } else if(!piece.getClass().equals(Piece.class)) {
+      //uses that all other pieces move in a straight line in a practically identically way
+      if (!piece.isMoveValid(CaptureDirection.RIGHT, fromX, fromY, toX, toY)) {
+        return true;
       }
+      int stepX = Integer.compare(deltaX, 0);
+      int stepY = Integer.compare(deltaY, 0);
+      int currentX = fromX;
+      int currentY = fromY;
 
-    } else if (piece instanceof Knight) {
-      // The knight is allowed to hop over other pieces and can therefore not be blocked
-      return false;
-    } else if (piece instanceof Bishop) {
-
-      if (deltaX < 0 && deltaY > 0 && (deltaY / deltaX) == -1) {
-
-        for (int i = 1; i <= yDistance; i++) {
-          int nextX = fromX - i;
-          int nextY = fromY + i;
-          if (boardRepresentation[nextX][nextY].hasPiece() && boardRepresentation[nextX][nextY].getPiece().getColor() == piece.getColor()) {
-            return true;
-          }
-        }
-
-        return false;
-      } else if (deltaX < 0 && deltaY < 0 && (deltaY / deltaX) == 1) {
-
-        for (int i = 1; i <= yDistance; i++) {
-          int nextX = fromX - i;
-          int nextY = fromY - i;
-          if (boardRepresentation[nextX][nextY].hasPiece() && boardRepresentation[nextX][nextY].getPiece().getColor() == piece.getColor()) {
-            return true;
-          }
-        }
-
-        return false;
-      } else if (deltaX > 0 && deltaY > 0 && (deltaY / deltaX) == 1) {
-
-        for (int i = 1; i <= yDistance; i++) {
-          int nextX = fromX + i;
-          int nextY = fromY + i;
-          if (boardRepresentation[nextX][nextY].hasPiece() && boardRepresentation[nextX][nextY].getPiece().getColor() == piece.getColor()) {
-            return true;
-          }
-        }
-
-        return false;
-      } else if (deltaX > 0 && deltaY < 0 && (deltaY / deltaX) == -1) {
-
-        for (int i = 1; i <= yDistance; i++) {
-          int nextX = fromX + 1;
-          int nextY = fromY - 1;
-          if (boardRepresentation[nextX][nextY].hasPiece() && boardRepresentation[nextX][nextY].getPiece().getColor() == piece.getColor()) {
-            return true;
-          }
-        }
-
-        return false;
-      }
-
-    } else if (piece instanceof Queen) {
-      // Combine Rook and Bishop checks
-      if (deltaX < 0 && deltaY == 0) {
-        // forward (if black) or backward (if white) movement.
-
-        for (int i = 1; i <= xDistance; i++) {
-          int nextX = fromX - i; // if black
-
-          if (piece.getColor() == Color.WHITE) {
-            nextX = fromX + i;
-          }
-
-          if (boardRepresentation[nextX][fromY].hasPiece() && boardRepresentation[nextX][fromY].getPiece().getColor() == piece.getColor()) {
-            return true; // the move is blocked by another piece with same color
-          }
-        }
-
-        return false; // passed test, not blocked
-      } else if (deltaX > 0 && deltaY == 0) {
-        // backward (if black) or forward (if white)
-
-        for (int i = 1; i <= xDistance; i++) {
-          int nextX = fromX + i; // if black
-
-          if (piece.getColor() == Color.WHITE) {
-            nextX = fromX - i;
-          }
-
-          if (boardRepresentation[nextX][fromY].hasPiece() && boardRepresentation[nextX][fromY].getPiece().getColor() == piece.getColor()) {
-            return true; // the move is blocked by another piece with same color
-          }
-        }
-
-        return false;
-      } else if (deltaX == 0 && deltaY > 0) {
-        // right movement
-
-        for (int i = 1; i <= yDistance; i++) {
-          int nextY = fromY + i;
-          if (boardRepresentation[fromX][nextY].hasPiece() && boardRepresentation[fromX][nextY].getPiece().getColor() == piece.getColor()) {
-            return true;
-          }
-        }
-
-        return false;
-      } else if (deltaX == 0 && deltaY < 0) {
-        // left movement
-
-        for (int i = 1; i <= yDistance; i++) {
-          int nextY = fromY - i;
-          if (boardRepresentation[fromX][nextY].hasPiece() && boardRepresentation[fromX][nextY].getPiece().getColor() == piece.getColor()) {
-            return true;
-          }
-        }
-
-        return false;
-      }
-
-      // Copied bishop logic
-      if (deltaX < 0 && deltaY > 0 && (deltaY / deltaX) == -1) {
-
-        for (int i = 1; i <= yDistance; i++) {
-          int nextX = fromX - i;
-          int nextY = fromY + i;
-          if (boardRepresentation[nextX][nextY].hasPiece() && boardRepresentation[nextX][nextY].getPiece().getColor() == piece.getColor()) {
-            return true;
-          }
-        }
-
-        return false;
-      } else if (deltaX < 0 && deltaY < 0 && (deltaY / deltaX) == 1) {
-
-        for (int i = 1; i <= yDistance; i++) {
-          int nextX = fromX - i;
-          int nextY = fromY - i;
-          if (boardRepresentation[nextX][nextY].hasPiece() && boardRepresentation[nextX][nextY].getPiece().getColor() == piece.getColor()) {
-            return true;
-          }
-        }
-
-        return false;
-      } else if (deltaX > 0 && deltaY > 0 && (deltaY / deltaX) == 1) {
-
-        for (int i = 1; i <= yDistance; i++) {
-          int nextX = fromX + i;
-          int nextY = fromY + i;
-          if (boardRepresentation[nextX][nextY].hasPiece() && boardRepresentation[nextX][nextY].getPiece().getColor() == piece.getColor()) {
-            return true;
-          }
-        }
-
-        return false;
-      } else if (deltaX > 0 && deltaY < 0 && (deltaY / deltaX) == -1) {
-
-        for (int i = 1; i <= yDistance; i++) {
-          int nextX = fromX + 1;
-          int nextY = fromY - 1;
-          if (boardRepresentation[nextX][nextY].hasPiece() && boardRepresentation[nextX][nextY].getPiece().getColor() == piece.getColor()) {
-            return true;
-          }
-        }
-
-        return false;
-      }
-
-    } else if (piece instanceof King) {
-      // King can move one spot in any direction, simply check if there exists another piece of the same color in that spot which it moves
-
-      if ((xDistance == 1 && yDistance == 0) || (yDistance == 1 && xDistance == 0) || (xDistance == 1 && yDistance == 1)) {
-        // King has taken one step to the left, right, up or down
-        if (toSquare.hasPiece() && toSquare.getPiece().getColor() == piece.getColor()) {
+      //goes through all the passed squares one by one and checks if it is blocked
+      while (currentX != toX || currentY != toY) {
+        currentX += stepX;
+        currentY += stepY;
+        Square currentSquare = boardRepresentation[currentX][currentY];
+        if (currentSquare.hasPiece() && currentSquare.getPiece().getColor().equals(piece.getColor())) {
           return true;
         }
-        return false;
+        if (currentSquare.hasPiece() && (currentX != toX || currentY != toY)) {
+          return true;
+        }
       }
-
     }
-
     return false;
   }
 
