@@ -214,7 +214,6 @@ public class Board {
    * @param toX:   the desired x position
    * @param toY:   the desired y position
    *               <p>
-   *               Also: the inside of this function is ugly af.
    */
   private boolean pieceIsBlocked(Piece piece, int fromX, int fromY, int toX, int toY) {
 
