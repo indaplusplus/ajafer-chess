@@ -24,7 +24,7 @@ public class Bishop extends Piece {
   public boolean isMoveValid(CaptureDirection captureDirection, int startX, int startY, int endX, int endY) {
     System.out.println("Preparing to move... " + name);
 
-    if (startX >= 0 && startX <= 7 && startY >= 0 && startY <= 7 && endX >= 0 && endX <= 7) {
+    if (startX >= 0 && startX <= 7 && startY >= 0 && startY <= 7 && endX >= 0 && endX <= 7 && endY >= 0 && endY <= 7) {
       int deltaX = endX - startX;
       int deltaY = endY - startY;
 
